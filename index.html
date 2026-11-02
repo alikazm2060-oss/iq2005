@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090d18">
+<title>MIAMI XFINITY | مشغل M3U</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+:root{--bg:#080c16;--panel:#111b2b;--line:#293950;--text:#f3f6fb;--muted:#95a5bb;--gold:#e7b957}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1b2b45,transparent 38%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+header{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#080c16ee;position:sticky;top:0;z-index:4;backdrop-filter:blur(12px)}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(135deg,#f0cb75,#95621d);display:grid;place-items:center;color:#111827;font-weight:900}.brand h1{font-size:18px;margin:0}.brand small{display:block;color:var(--muted);margin-top:4px}
+.pill{border:1px solid #3b4c65;border-radius:25px;padding:8px 12px;font-size:12px;color:#d2dbea}
+main{max-width:1450px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,1fr);gap:18px}
+.card{background:linear-gradient(145deg,#142033,#0e1624);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 14px 38px #0004}
+.screen{aspect-ratio:16/9;background:#000;position:relative;display:grid;place-items:center}
+video{width:100%;height:100%;max-height:75vh;background:#000;display:block}
+.placeholder{position:absolute;text-align:center;color:#9baac0;pointer-events:none;padding:20px}.placeholder b{display:block;color:white;font-size:20px;margin-bottom:8px}
+.now{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.now h2{font-size:16px;margin:0 0 5px}.now p{font-size:12px;color:var(--muted);margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 17px}
+button,.file-label{font:inherit;background:#1c2b42;color:#f1f5fa;border:1px solid #3a4b64;padding:10px 13px;border-radius:10px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+button:hover,.file-label:hover{border-color:var(--gold);color:var(--gold)}
+button.primary,.file-label.primary{background:linear-gradient(135deg,#efc66e,#b77e25);color:#151a22;border:0;font-weight:bold}
+input[type=file]{display:none}
+.list-head{padding:16px;border-bottom:1px solid var(--line)}.list-head h3{margin:0 0 12px;font-size:16px}
+.search-row{display:flex;gap:8px}.search-row input{min-width:0;width:100%;background:#0a1220;color:white;border:1px solid #394a62;border-radius:10px;padding:11px;outline:none;font:inherit}
+select{background:#0a1220;color:#eaf0f8;border:1px solid #394a62;border-radius:10px;padding:10px;font:inherit;max-width:48%}
+.count{font-size:12px;color:var(--muted);margin-top:10px}
+.items{height:min(66vh,720px);overflow:auto;padding:8px}
+.item{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid transparent;border-radius:12px;cursor:pointer}
+.item:hover{background:#1a2940}.item.active{background:#26364e;border-color:#a17b3b}
+.item-icon{width:42px;height:42px;border-radius:10px;background:#e8edf3;color:#1b2738;display:grid;place-items:center;flex:none;overflow:hidden;font-weight:bold}
+.item-icon img{width:100%;height:100%;object-fit:contain}
+.info{min-width:0;flex:1}.info strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.info small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.empty{text-align:center;color:var(--muted);padding:30px;line-height:1.8}
+.footer{max-width:1450px;margin:auto;padding:0 18px 22px;color:#77869b;font-size:11px;line-height:1.8}
+@media(max-width:900px){main{grid-template-columns:1fr;padding:10px}.items{height:48vh}header{padding:13px}.brand h1{font-size:15px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">MX</div><div><h1>MIAMI XFINITY</h1><small>مشغل القنوات المباشرة</small></div></div>
+ <div class="pill" id="total">لم تتم إضافة قائمة بعد</div>
+</header>
+<main>
+<section class="card">
+ <div class="screen">
+  <video id="video" controls playsinline></video>
+  <div class="placeholder" id="placeholder"><b>أهلاً بك في MIAMI XFINITY</b><span>أضف ملف M3U أو M3U8 لعرض القنوات وتشغيلها</span></div>
+ </div>
+ <div class="now"><div><h2 id="current">لم يتم اختيار قناة</h2><p id="subtitle">قائمة فارغة — أضف ملفك للبدء</p></div><span class="pill" id="status">جاهز</span></div>
+ <div class="actions">
+  <label class="file-label primary" for="m3uFile">＋ إضافة ملف M3U</label>
+  <input id="m3uFile" type="file" accept=".m3u,.m3u8,audio/x-mpegurl,application/vnd.apple.mpegurl,text/plain">
+  <button id="play">▶ تشغيل</button><button id="stop">■ إيقاف</button><button id="full">⛶ ملء الشاشة</button><button id="mute">🔊 كتم الصوت</button>
+  <button id="clear">مسح القائمة</button>
+ </div>
+</section>
+<aside class="card">
+ <div class="list-head">
+  <h3>قائمة القنوات</h3>
+  <div class="search-row"><input id="search" type="search" placeholder="ابحث عن قناة…"><select id="category"><option value="">كل التصنيفات</option></select></div>
+  <div class="count" id="count">لا توجد قنوات حالياً</div>
+ </div>
+ <div class="items" id="items"><div class="empty">القائمة فارغة حالياً<br>اضغط «إضافة ملف M3U» لاختيار قائمة القنوات من جهازك</div></div>
+</aside>
+</main>
+<div class="footer">المشغل لا يحتوي على أي قنوات افتراضية. اختر ملف M3U من جهازك في كل مرة تريد فيها تحميل قائمة. لا يتم رفع الملف إلى أي خادم؛ تتم قراءته محلياً داخل المتصفح.</div>
+<script>
+let channels=[], selected=-1, hls=null;
+const video=document.getElementById('video');
+function parseM3U(text){
+ const result=[];const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/);let meta=null;
+ for(const raw of lines){
+  const line=raw.trim();if(!line)continue;
+  if(line.startsWith('#EXTINF')){
+   const comma=line.indexOf(',');
+   const attrs=line.slice(0,comma<0?undefined:comma);
+   const name=comma>=0?line.slice(comma+1).trim():'قناة بدون اسم';
+   const get=(key)=>{const m=attrs.match(new RegExp(key+'="([^"]*)"'));return m?m[1]:''};
+   meta={name:name||get('tvg-name')||'قناة بدون اسم',logo:get('tvg-logo'),group:get('group-title')||'غير مصنف',number:get('tvg-chno')};
+  }else if(!line.startsWith('#')&&meta){
+   result.push({...meta,url:line});meta=null;
+  }
+ }
+ return result;
+}
+function setStatus(s){document.getElementById('status').textContent=s}
+function render(){
+ const q=document.getElementById('search').value.trim().toLowerCase();
+ const cat=document.getElementById('category').value;
+ const shown=channels.map((c,i)=>({...c,index:i})).filter(c=>(!cat||c.group===cat)&&(!q||c.name.toLowerCase().includes(q)||c.group.toLowerCase().includes(q)));
+ document.getElementById('count').textContent=`عرض ${shown.length} من ${channels.length} قناة`;
+ document.getElementById('total').textContent=channels.length?`${channels.length} قناة محمّلة`:'لم تتم إضافة قائمة بعد';
+ const host=document.getElementById('items');host.innerHTML='';
+ if(!shown.length){host.innerHTML='<div class="empty">لا توجد قنوات مطابقة</div>';return}
+ shown.forEach(c=>{
+  const el=document.createElement('div');el.className='item'+(c.index===selected?' active':'');
+  const icon=document.createElement('div');icon.className='item-icon';
+  if(c.logo){const img=document.createElement('img');img.src=c.logo;img.onerror=()=>{icon.textContent='▶'};icon.append(img)}else icon.textContent='▶';
+  const info=document.createElement('div');info.className='info';
+  const name=document.createElement('strong');name.textContent=c.name;
+  const group=document.createElement('small');group.textContent=c.group;
+  info.append(name,group);el.append(icon,info);el.onclick=()=>playChannel(c.index);host.append(el);
+ });
+}
+function playChannel(i){
+ const c=channels[i];if(!c)return;selected=i;
+ document.getElementById('current').textContent=c.name;
+ document.getElementById('subtitle').textContent=c.group+(c.number?' • CH '+c.number:'');
+ document.getElementById('placeholder').style.display='none';setStatus('جاري الاتصال…');render();
+ if(hls){hls.destroy();hls=null}video.pause();video.removeAttribute('src');video.load();
+ if(video.canPlayType('application/vnd.apple.mpegurl')){
+  video.src=c.url;video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('اضغط تشغيل'));
+ }else if(window.Hls&&Hls.isSupported()){
+  hls=new Hls({enableWorker:true,lowLatencyMode:true});hls.loadSource(c.url);hls.attachMedia(video);
+  hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('اضغط تشغيل')));
+  hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal)setStatus('تعذر تشغيل البث')});
+ }else{video.src=c.url;video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('تعذر التشغيل'))}
+}
+document.getElementById('m3uFile').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const text=await file.text();const parsed=parseM3U(text);
+  if(!parsed.length){alert('لم يتم العثور على قنوات صالحة في الملف. تأكد أنه ملف M3U صحيح.');return}
+  if(hls){hls.destroy();hls=null}video.pause();video.removeAttribute('src');video.load();
+  channels=parsed;selected=-1;document.getElementById('current').textContent='لم يتم اختيار قناة';document.getElementById('subtitle').textContent=file.name;
+  document.getElementById('placeholder').style.display='grid';setStatus('تم تحميل القائمة');
+  const cats=[...new Set(channels.map(c=>c.group))].sort((a,b)=>a.localeCompare(b));
+  const sel=document.getElementById('category');sel.innerHTML='<option value="">كل التصنيفات</option>';
+  cats.forEach(cat=>{const o=document.createElement('option');o.value=cat;o.textContent=cat;sel.append(o)});
+  document.getElementById('search').value='';render();
+ }catch(err){alert('تعذر قراءة الملف: '+err.message)}
+ e.target.value='';
+});
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('category').addEventListener('change',render);
+document.getElementById('play').onclick=()=>{if(selected<0){if(channels.length)playChannel(0)}else video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('تعذر التشغيل'))};
+document.getElementById('stop').onclick=()=>{video.pause();video.removeAttribute('src');video.load();if(hls){hls.destroy();hls=null}setStatus('متوقف');document.getElementById('placeholder').style.display='grid'};
+document.getElementById('full').onclick=()=>{const el=document.querySelector('.screen');if(el.requestFullscreen)el.requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen()};
+document.getElementById('mute').onclick=()=>{video.muted=!video.muted;document.getElementById('mute').textContent=video.muted?'🔇 إلغاء الكتم':'🔊 كتم الصوت'};
+document.getElementById('clear').onclick=()=>{if(hls){hls.destroy();hls=null}video.pause();video.removeAttribute('src');video.load();channels=[];selected=-1;document.getElementById('current').textContent='لم يتم اختيار قناة';document.getElementById('subtitle').textContent='قائمة فارغة — أضف ملفك للبدء';document.getElementById('placeholder').style.display='grid';document.getElementById('category').innerHTML='<option value="">كل التصنيفات</option>';document.getElementById('search').value='';setStatus('جاهز');render()};
+render();
+</script>
+</body>
+</html>
